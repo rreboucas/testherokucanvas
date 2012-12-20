@@ -92,7 +92,6 @@
             * @returns {Boolean} <code>true</code> if the object or value is a function, otherwise <code>false</code>
             */
             isFunction: function (value) {
-                //return typeof value === "function";
                 return !!(value && value.constructor && value.call && value.apply);
             },
             
@@ -389,6 +388,16 @@
             },
 
             /**
+             * @description Determines if a string ends with a particular suffix.
+             * @param {String} str The string to check.
+             * @param {String} suffix The suffix to check for.
+             * @returns {boolean} True if the string ends with suffix
+             */
+            endsWith: function (str, suffix) {
+                return str.indexOf(suffix, str.length - suffix.length) !== -1;
+            },
+
+            /**
             * @name Sfdc.canvas.prototypeOf
             * @function
             * @description Returns the prototype of the specified object
@@ -512,7 +521,7 @@
                     ready();
                 }
                 else if (readyHandlers) {
-                    if ($.isFunction(global.setTimeout)) {
+                    if (!$.isNil(global.setTimeout)) {
                         global.setTimeout(tryReady, 30);
                     }
                 }
@@ -547,7 +556,8 @@
     }
 
 
-}(this));/**
+}(this));
+/**
 *@namespace Sfdc.canvas.cookies
 *@name Sfdc.canvas.cookies
 */
@@ -1053,11 +1063,11 @@
 
     "use strict";
 
-    var pversion, cversion = "27.0";
+    var pversion, cversion = "28.0";
 
     var module =   (function() /**@lends module */ {
         
-        var purl, cbs = [], seq = 0;
+        var purl, cbs = [], seq = 0, subscriber, autog = true;
 
         function startsWithHttp(u, d) {
             return  $$.isNil(u) ? u : (u.substring(0, 4) === "http") ? u : d;
@@ -1091,22 +1101,36 @@
         function callbacker(data) {
 
             if (data) {
-                // If the server is telling us the access_token is invalid, wipe it clean.
-                if (data.status === 401 &&
-                    $$.isArray(data.payload) &&
-                    data.payload[0].errorCode &&
-                    data.payload[0].errorCode === "INVALID_SESSION_ID") {
-                    // Session has expired logout.
-                    $$.oauth.logout();
+                if (data.type === 'event') {
+                    var event = data.payload;
+                    if (subscriber) {
+                        if ($$.isFunction(subscriber[event.name])) {
+                            subscriber[event.name](event.value);
+                        }
+                    }
                 }
-                if ($$.isFunction(cbs[data.seq])) {
-                    cbs[data.seq](data);
+                else if (data.type === 'callback') {
+                    // If the server is telling us the access_token is invalid, wipe it clean.
+                    if (data.status === 401 &&
+                        $$.isArray(data.payload) &&
+                        data.payload[0].errorCode &&
+                        data.payload[0].errorCode === "INVALID_SESSION_ID") {
+                        // Session has expired logout.
+                        $$.oauth.logout();
+                    }
+
+                    if ($$.isFunction(cbs[data.seq])) {
+                        cbs[data.seq](data);
+                    }
+                    else {
+                        // This can happen when the user switches out canvas apps real quick,
+                        // before the request from the last canvas app have finish processing.
+                        // We will ignore any of these results as the canvas app is no longer active to
+                        // respond to the results.
+                    }
                 }
                 else {
-                    // This can happen when the user switches out canvas apps real quick,
-                    // before the request from the last canvas app have finish processing.
-                    // We will ignore any of these results as the canvas app is no longer active to
-                    // respond to the results.
+                    throw "Undefined event type " + data.type;
                 }
             }
         }
@@ -1285,13 +1309,124 @@
          * @param {String} t oauth token, if supplied it will be stored in a volatile local JS variable.
          * @returns {Object} the oauth token.
          */
-
         function token(t) {
             return $$.oauth.token(t);
         }
 
+        /**
+         * @description Returns the current version of the client.
+         * @returns {Object} {clientVersion : "28.0"}.
+         */
         function version() {
             return {clientVersion: cversion};
+        }
+
+        /**
+         * @description Informs the parent window to resize your canvas iframe. If parameters are spcified
+         * the parent window will attempt to automatically determine the height of the canvas app based off of
+         * content and set the iframe's width and height accordingly. If you would like to set the dimension
+         * explicitly pass in an object with height and/or width properties.
+         * @param {Client} client object from signed request.
+         * @param {Size} {height : "700px", width : "500px"} optional
+         */
+        function resize(client, size) {
+            var sh, ch, sw, cw, s = {height : "", width : ""};
+
+            // If the size was not supplied, adjust window
+            if ($$.isNil(size)) {
+                sh = document.documentElement.scrollHeight;
+                ch = document.documentElement.clientHeight;
+                if (ch !== sh) {
+                    s.height = sh + "px";
+                }
+                sw = document.documentElement.scrollWidth;
+                cw = document.documentElement.clientWidth;
+                if (sw !== cw) {
+                    s.width = sw + "px";
+                }
+            }
+            else {
+                if (!$$.isNil(size.height)) {
+                    s.height = size.height;
+                }
+                if (!$$.isNil(size.width)) {
+                    s.width = size.width;
+                }
+            }
+            if (!$$.isNil(s.height) || !$$.isNil(s.width)) {
+                postit(null, {type : "resize", config : {client : client}, size : s});
+            }
+        }
+
+        /**
+         * @description Convenience method for getting the current size of the iframe.
+         * @return {size} {heights {} , widths : {}}
+         * heights.contentHeight - the height of the virtual iframe, all content not just visible
+         * heights.pageHeight - the height of the visible iframe in the browser
+         * heights.scrollTop - the position of the scroll bar measured from the top
+         * widths.contentWidth - the width of the virtual iframe, all content not just visible
+         * widths.pageWidth - the width of the visible iframe in the browser
+         * widths.scrollLeft - the position of the scroll bar measured from the left
+         */
+        function size() {
+
+            var contentHeight = document.documentElement.scrollHeight,
+                pageHeight = document.documentElement.clientHeight,
+                scrollTop = (document.documentElement && document.documentElement.scrollTop) || document.body.scrollTop,
+                contentWidth = document.documentElement.scrollWidth,
+                pageWidth = document.documentElement.clientWidth,
+                scrollLeft = (document.documentElement && document.documentElement.scrollLeft) || document.body.scrollLeft;
+
+            return {heights : {contentHeight : contentHeight, pageHeight : pageHeight, scrollTop : scrollTop},
+                    widths : {contentWidth : contentWidth, pageWidth : pageWidth, scrollLeft : scrollLeft}};
+        }
+
+        /**
+         * @description Starts or stops a timer which will automatically check the content size of your iframe and adjust the frame accordingly.
+         * Note: you should turn off scrolling before this call otherwise you can get a flicker.
+         * @param {client} client object from signed request.
+         * @param {boolean} turn on or off, true default
+         * @param {interval} interval used to check content size, default timeout is 300ms.
+         */
+        function autogrow(client, b, interval) {
+
+            interval = ($$.isNil(interval)) ? 300 : interval;
+            autog  = ($$.isNil(b)) ? true : b;
+            if (autog === false) {
+                return;
+            }
+            setTimeout(function () {
+                resize(client);
+                autogrow(client, autog);
+            },interval);
+        }
+
+        function subscriptions(obj) {
+            var sub = {};
+            $$.each(obj, function (v, i) {
+                if (i.substring(0, 2) === "on") {
+                    sub[i] = true;
+                }
+            });
+            return sub;
+        }
+
+        /**
+         * @description Subscribe to events. "onScroll" currently only supported callback.
+         * @param {client} client object from signed request.
+         * @param {Object} s subscriber object with callback functions.
+         */
+        function subscribe(client, s) {
+            var subs;
+            subscriber = s;
+            // Only support onScroll for now...
+            if (!$$.isNil(subscriber) && $$.isFunction(subscriber.onScroll)) {
+                client = client || $$.oauth.client();
+                if (validateClient(client)) {
+                    subs = subscriptions(subscriber);
+                    postit(null, {type : "subscribe", config : {client : client}, subscriptions : subs});
+                }
+            }
         }
 
         $$.xd.receive(callbacker, getTargetOrigin);
@@ -1300,7 +1435,11 @@
             ctx : ctx,
             ajax : ajax,
             token : token,
-            version : version
+            version : version,
+            resize : resize,
+            size : size,
+            autogrow : autogrow,
+            subscribe : subscribe
         };
     }());
 

@@ -67,7 +67,6 @@
             * @returns {Boolean} <code>true</code> if the object or value is a function, otherwise <code>false</code>
             */
             isFunction: function (value) {
-                //return typeof value === "function";
                 return !!(value && value.constructor && value.call && value.apply);
             },
             
@@ -364,6 +363,16 @@
             },
 
             /**
+             * @description Determines if a string ends with a particular suffix.
+             * @param {String} str The string to check.
+             * @param {String} suffix The suffix to check for.
+             * @returns {boolean} True if the string ends with suffix
+             */
+            endsWith: function (str, suffix) {
+                return str.indexOf(suffix, str.length - suffix.length) !== -1;
+            },
+
+            /**
             * @name Sfdc.canvas.prototypeOf
             * @function
             * @description Returns the prototype of the specified object
@@ -487,7 +496,7 @@
                     ready();
                 }
                 else if (readyHandlers) {
-                    if ($.isFunction(global.setTimeout)) {
+                    if (!$.isNil(global.setTimeout)) {
                         global.setTimeout(tryReady, 30);
                     }
                 }
