@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011, salesforce.com, inc.
+ * Copyright (c) 2011-2013, salesforce.com, inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided
@@ -23,19 +23,26 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-
 package canvas;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 
+/**
+ * Environmental information about the canvas application.
+ */
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class CanvasEnvironmentContext {
 
     private String locationUrl;
+    private String displayLocation;
     private String uiTheme;
     private Dimensions dimensions;
     private SystemVersion version;
+    private Map<String,Object> parameters;
 
     /**
      * Returns the url of the current location.
@@ -45,20 +52,38 @@ public class CanvasEnvironmentContext {
         return this.locationUrl;
     }
 
+    @JsonProperty("locationUrl")
     public void setLocationUrl(String referrerUrl) {
         this.locationUrl = referrerUrl;
+    }
+
+    /**
+     * Returns the location where the app is being displayed. Valid locations are selected when
+     * the app is created.
+     */
+    @JsonProperty("displayLocation")
+    public String getDisplayLocation() {
+        return displayLocation;
+    }
+
+    @JsonProperty("displayLocation")
+    public void setDisplayLocation(String displayLocation) {
+        this.displayLocation = displayLocation;
     }
 
     /**
      * Returns the value Theme2 if the user is using the newer user interface theme of the online application, labeled
      * \u201cSalesforce.\u201d Returns Theme1 if the user is using the older user interface theme, labeled
      * \u201cSalesforce Classic.\u201d
+     * 
+     * @see common.html.styles.UiSkin
      */
     @JsonProperty("uiTheme")
     public String getUiTheme() {
         return this.uiTheme;
     }
 
+    @JsonProperty("uiTheme")
     public void setUiTheme(String uiTheme) {
         this.uiTheme = uiTheme;
     }
@@ -83,15 +108,29 @@ public class CanvasEnvironmentContext {
         this.version = systemVersion;
     }
 
+    @JsonProperty("parameters")
+    public Map<String, Object> getParameters() {
+        if (null == this.parameters){
+            this.parameters = new HashMap<String, Object>();
+        }
+        return this.parameters;
+    }
+
+    @JsonProperty("parameters")
+    public void setParameters(Map<String, Object> parameters) {
+        this.parameters = parameters;
+    }
+
     @Override
     public String toString()
     {
         return locationUrl + ", " +
+               displayLocation + ", " +
                uiTheme + "," +
-               dimensions.toString() + "," +
+               dimensions.toString() + "," + 
                version.toString();
     }
-
+    
     @JsonIgnoreProperties(ignoreUnknown=true)
     public static class Dimensions{
         /**
@@ -102,6 +141,16 @@ public class CanvasEnvironmentContext {
          * The height of the iframe.
          */
         private String height;
+
+        /**
+         * The max width of the iframe
+         */
+        private String maxWidth;
+        /**
+         * The max height of the iframe.
+         */
+        private String maxHeight;
+
 
         @JsonProperty("width")
         public String getWidth() {
@@ -121,22 +170,42 @@ public class CanvasEnvironmentContext {
             this.height = height;
         }
 
+        @JsonProperty("maxWidth")
+        public String getMaxWidth() {
+            return maxWidth;
+        }
+
+        @JsonProperty("maxWidth")
+        public void setMaxWidth(String maxWidth) {
+            this.maxWidth = maxWidth;
+        }
+
+        @JsonProperty("maxHeight")
+        public String getMaxHeight() {
+            return maxHeight;
+        }
+
+        @JsonProperty("maxHeight")
+        public void setMaxHeight(String maxHeight) {
+            this.maxHeight = maxHeight;
+        }
+
         @Override
         public String toString(){
-            return String.format("(w:%s,h:%s)",width,height);
+            return String.format("(w:%s,h:%s,mw:%s,mh:%s)",width,height,maxWidth,maxHeight);
         }
     }
-
+    
     @JsonIgnoreProperties(ignoreUnknown=true)
     public static class SystemVersion{
-
+        
         private String api;
         private String season;
-
+        
         // Needs default ctor for Jackson to construct.
         public SystemVersion(){
         }
-
+        
         @JsonProperty("api")
         public String getApiVersion() {
             return this.api;
@@ -146,22 +215,21 @@ public class CanvasEnvironmentContext {
         public void setApiVersion(String apiVersion) {
             this.api = apiVersion;
         }
-
+        
         @JsonProperty("season")
         public String getSeason() {
             return this.season;
         }
-
+        
         @JsonProperty("season")
         public void setSeason(String season) {
             this.season = season;
         }
-
+        
         @Override
         public String toString(){
             return String.format("%s - %s",api,season);
         }
-
+        
     }
-
 }

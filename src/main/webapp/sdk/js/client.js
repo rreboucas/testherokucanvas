@@ -1,4 +1,29 @@
 /**
+ * Copyright (c) 2011, salesforce.com, inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification, are permitted provided
+ * that the following conditions are met:
+ *
+ *    Redistributions of source code must retain the above copyright notice, this list of conditions and the
+ *    following disclaimer.
+ *
+ *    Redistributions in binary form must reproduce the above copyright notice, this list of conditions and
+ *    the following disclaimer in the documentation and/or other materials provided with the distribution.
+ *
+ *    Neither the name of salesforce.com, inc. nor the names of its contributors may be used to endorse or
+ *    promote products derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+ * TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+/**
 *@namespace Sfdc.canvas.client
 *@name Sfdc.canvas.client
 */
@@ -265,12 +290,36 @@
         }
 
         /**
-         * @description Informs the parent window to resize your canvas iframe. If parameters are spcified
+         * @public
+         * @name Sfdc.canvas.client#resize
+         * @function
+         * @description Informs the parent window to resize your canvas iframe. If parameters are not specified
          * the parent window will attempt to automatically determine the height of the canvas app based off of
-         * content and set the iframe's width and height accordingly. If you would like to set the dimension
+         * content and set the iframe's width and height accordingly. If you would like to set the dimensions
          * explicitly pass in an object with height and/or width properties.
          * @param {Client} client object from signed request.
-         * @param {Size} {height : "700px", width : "500px"} optional
+         * @param {Size} size optional height and width information
+         * @example
+         * //Automatically determine the size
+         * Sfdc.canvas(function() {
+         *     sr = JSON.parse('<%=signedRequestJson%>');
+         *     Sfdc.canvas.client.resize(sr.client);
+         * });
+         *
+         * @example
+         * //Set the height and width explicitly
+         * Sfdc.canvas(function() {
+         *     sr = JSON.parse('<%=signedRequestJson%>');
+         *     Sfdc.canvas.client.resize(sr.client, {height : "1000px", width : "900px"});
+         * });
+         *
+         * @example
+         * //Set only the height
+         * Sfdc.canvas(function() {
+         *     sr = JSON.parse('<%=signedRequestJson%>');
+         *     Sfdc.canvas.client.resize(sr.client, {height : "1000px"});
+         * });
+         *
          */
         function resize(client, size) {
             var sh, ch, sw, cw, s = {height : "", width : ""};
@@ -302,14 +351,32 @@
         }
 
         /**
+         * @public
+         * @name Sfdc.canvas.client#size
+         * @function
          * @description Convenience method for getting the current size of the iframe.
-         * @return {size} {heights {} , widths : {}}
-         * heights.contentHeight - the height of the virtual iframe, all content not just visible
-         * heights.pageHeight - the height of the visible iframe in the browser
-         * heights.scrollTop - the position of the scroll bar measured from the top
-         * widths.contentWidth - the width of the virtual iframe, all content not just visible
-         * widths.pageWidth - the width of the visible iframe in the browser
-         * widths.scrollLeft - the position of the scroll bar measured from the left
+         * @return {Sizes}
+         * heights.contentHeight - the height of the virtual iframe, all content not just visible.
+         * heights.pageHeight - the height of the visible iframe in the browser.
+         * heights.scrollTop - the position of the scroll bar measured from the top.
+         * widths.contentWidth - the width of the virtual iframe, all content not just visible.
+         * widths.pageWidth - the width of the visible iframe in the browser.
+         * widths.scrollLeft - the position of the scroll bar measured from the left.
+         * @example
+         *
+         * var sizes = Sfdc.canvas.client.size();
+         * console.log("contentHeight; " + sizes.heights.contentHeight);
+         * console.log("pageHeight; " + sizes.heights.pageHeight);
+         * console.log("scrollTop; " + sizes.heights.scrollTop);
+         * console.log("contentWidth; " + sizes.widths.contentWidth);
+         * console.log("pageWidth; " + sizes.widths.pageWidth);
+         * console.log("scrollLeft; " + sizes.widths.scrollLeft);
+         *
+         * Sfdc.canvas(function() {
+         *     sr = JSON.parse('<%=signedRequestJson%>');
+         *     Sfdc.canvas.client.autogrow(sr.client);
+         * });
+
          */
         function size() {
 
@@ -325,11 +392,38 @@
         }
 
         /**
-         * @description Starts or stops a timer which will automatically check the content size of your iframe and adjust the frame accordingly.
+         * @public
+         * @name Sfdc.canvas.client#autogrow
+         * @function
+         * @description Starts or stops a timer which will automatically check the content size of your iframe and
+         * adjust the frame accordingly.
+         * Use this function when you know your content is changing size, but you're not sure when. There is delay as
+         * the resizing is done asynchronous. Therfore, if you know when your content changes size, you should call
+         * 'resize()' explicitly and save Browser CPU cycles.
          * Note: you should turn off scrolling before this call otherwise you can get a flicker.
          * @param {client} client object from signed request.
-         * @param {boolean} turn on or off, true default
+         * @param {boolean} on or off, true default
          * @param {interval} interval used to check content size, default timeout is 300ms.
+         * @example
+         *
+         * // Turn on auto grow with default settings.
+         * Sfdc.canvas(function() {
+         *     sr = JSON.parse('<%=signedRequestJson%>');
+         *     Sfdc.canvas.client.autogrow(sr.client);
+         * });
+         *
+         * // Turn on auto grow with polling interval of 100ms (milli seconds).
+         * Sfdc.canvas(function() {
+         *     sr = JSON.parse('<%=signedRequestJson%>');
+         *     Sfdc.canvas.client.autogrow(sr.client, true, 100);
+         * });
+         *
+         * // Turn off auto grow.
+         * Sfdc.canvas(function() {
+         *     sr = JSON.parse('<%=signedRequestJson%>');
+         *     Sfdc.canvas.client.autogrow(sr.client, false);
+         * });
+
          */
         function autogrow(client, b, interval) {
 
@@ -355,9 +449,26 @@
         }
 
         /**
-         * @description Subscribe to events. "onScroll" currently only supported callback.
+         * @description Subscribe to parent events. "onScroll" currently only supported callback.
+         * @public
+         * @name Sfdc.canvas.client#subscribe
+         * @function
          * @param {client} client object from signed request.
          * @param {Object} s subscriber object with callback functions.
+         * @example
+         *
+         * Sfdc.canvas(function() {
+         *     sr = JSON.parse('<%=signedRequestJson%>');
+         *     // Capture the onScrolling event of the parent window.
+         *     Sfdc.canvas.client.subscribe(sr.client, {onScroll : function () {
+         *          console.log("Parent's contentHeight; " + event.heights.contentHeight);
+         *          console.log("Parent's pageHeight; " + event.heights.pageHeight);
+         *          console.log("Parent's scrollTop; " + event.heights.scrollTop);
+         *          console.log("Parent's contentWidth; " + event.widths.contentWidth);
+         *          console.log(Parent's "pageWidth; " + event.widths.pageWidth);
+         *          console.log("Parent's scrollLeft; " + event.widths.scrollLeft);
+         *      }});
+         * });
          */
         function subscribe(client, s) {
             var subs;

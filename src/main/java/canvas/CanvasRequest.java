@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011, salesforce.com, inc.
+ * Copyright (c) 2011-2013, salesforce.com, inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided
@@ -23,11 +23,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-
 package canvas;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -38,7 +34,6 @@ import org.codehaus.jackson.annotate.JsonProperty;
  * request is information for authenticating and context about the user, organization and environment.
  * <p>
  * This class is serialized into JSON on then signed by the signature service to prevent tampering.
- *
  */
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class CanvasRequest {
@@ -107,8 +102,8 @@ public class CanvasRequest {
     }
 
     /**
-     * Unique information about this client (including oauth token). This information (in JSON) format needs to be
-     * included on all client side SDK calls. 
+     * Client information passed from client to server. Contains authorization information
+     * and instance information.
      */
     @JsonProperty("client")
     public CanvasClient getClient() {
@@ -119,5 +114,5 @@ public class CanvasRequest {
     public void setClient(CanvasClient client) {
         this.client = client;
     }
-}
 
+}

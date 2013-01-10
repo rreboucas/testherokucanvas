@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011, salesforce.com, inc.
+ * Copyright (c) 2011-2013, salesforce.com, inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided
@@ -25,16 +25,12 @@
  */
 package canvas;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
  * Describes contextual information about the current canvas client (third party app). This Object,
  * in JS literal notation, needs to ba passed on all Sfdc.canvas.client requests.
- *
  */
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class CanvasClient
@@ -113,5 +109,5 @@ public class CanvasClient
     public void setInstanceUrl(String instanceUrl) {
         this.instanceUrl = instanceUrl;
     }
-}
 
+}
