@@ -123,6 +123,16 @@
                 return value !== null && typeof value === 'object';
             },
 
+            /**
+             * @description Checks whether the value is of type 'string' and is not null.
+             * @param {Object} value The string to check
+             * @returns {Boolean} <code>true</code> if the string or value is of type string, otherwise <code>false</code>
+             */
+            isString: function(value) {
+                return value !== null && typeof value == "string";
+            },
+
+
             // common functions
             //-----------------
             
@@ -396,6 +406,15 @@
             endsWith: function (str, suffix) {
                 return str.indexOf(suffix, str.length - suffix.length) !== -1;
             },
+
+            capitalize: function(str) {
+                return str.charAt(0).toUpperCase() + str.slice(1);
+            },
+
+            uncapitalize: function(str) {
+                return str.charAt(0).toLowerCase() + str.slice(1);
+            },
+
 
             /**
             * @name Sfdc.canvas.prototypeOf
