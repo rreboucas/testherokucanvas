@@ -4,6 +4,7 @@
 *.class
 .project
 .classpath
+.DS_Store
 keystore
 target/
 .settings/
