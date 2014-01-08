@@ -23,6 +23,7 @@ HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABI
 NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 --%>
+<%@taglib  uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <p>
 Force.com Canvas delivers user context information directly to your application, complete
 with a scoped authentication token to allow your application to communicate with Salesforce.com.
@@ -51,4 +52,10 @@ Below is a sample of that information:
       <td><b>Company: </b></td>
       <td><span id='company'>${canvasRequest.context.organizationContext.name}</span></td>
     </tr>
+    <c:if test="${!empty canvasRequest.context.environmentContext.entity.Id}" >
+      <tr>
+        <td colspan="2">You are currently viewing <b>${canvasRequest.context.environmentContext.entity.attributes.type} ${canvasRequest.context.environmentContext.entity.Id}</b></td>
+      </tr>
+    </c:if>
+    
 </table>

@@ -55,6 +55,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     <tr>
                         <td><b>Name: </b><span id='name'></span></td>
                         <td><b>Location: </b><span id='location'></span></td>
+                        <td><b>Subject: </b><span id='subject-type'></span></td>
                         <td><b>Header: </b><span id='header-enabled'></span></td>
                         <td><b>Share: </b><span id='share-enabled'></span></td>
                     </tr>
