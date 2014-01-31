@@ -26,16 +26,12 @@
 package servlets;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import util.UserAgent;
-
 import canvas.CanvasRequest;
 import canvas.SignedRequest;
 
@@ -45,12 +41,28 @@ import canvas.SignedRequest;
  * This class dispatches the request based on where the canvas application is
  * being rendered from.
  */
-public class CanvasController extends HttpServlet {
+public class CanvasController extends AbstractServlet {
 
-	private static final String SIGNED_REQUEST_PARAM = "signed_request";
+	public static final String SIGNED_REQUEST_PARAM = "signed_request";
+	
+	/**
+	 * This request parameter is passed when SIGNED_REQUEST is configured
+	 * for the app, but requires some additional information.  This can be
+	 * determined on the value on this parameter.
+	 */
+	public static final String SFDC_CANVAS_AUTH = "_sfdc_canvas_auth";
+	
+	/**
+	 * This status indicates that the user must approve the app before
+	 * the signed request can be delivered to the app.
+	 * 
+	 * @see #SFDC_CANVAS_AUTH
+	 */
+	public static final String AUTH_STATUS_USER_APPROVAL_REQUIRED = "user_approval_required";
 
 	private static final String DEFAULT_RESOURCE = "/default/index.jsp";
 	private static final String NO_SIGNED_REQUEST_RESOURCE = "/welcome.jsp";
+	private static final String USER_APPROVAL_RESOURCE = "/user-approval.jsp";
 
 	private static final long serialVersionUID = 2956510495364791829L;
 
@@ -58,8 +70,18 @@ public class CanvasController extends HttpServlet {
 	protected void service(HttpServletRequest request,
 	        HttpServletResponse response) throws ServletException, IOException {
 		String srString = request.getParameter(SIGNED_REQUEST_PARAM);
+		String authStatus = request.getParameter(SFDC_CANVAS_AUTH);
+		String consumerKey = System.getenv("CANVAS_CONSUMER_KEY");
 
 		request.setAttribute("ua",UserAgent.parse(request.getHeader("User-Agent")));
+		if (null != authStatus && AUTH_STATUS_USER_APPROVAL_REQUIRED.equals(authStatus)){
+			if (null == consumerKey || "".equals(consumerKey.trim())){
+				throw new IllegalStateException("Consumer key is not defined. Did you forget to set your environment variable, CANVAS_CONSUMER_KEY?");
+			}
+			request.setAttribute("consumerKey", consumerKey);
+			forward(USER_APPROVAL_RESOURCE, request, response);
+			return;
+		}
 		if (!"POST".equals(request.getMethod())) {
 			forward(NO_SIGNED_REQUEST_RESOURCE, request, response);
 			return;
@@ -78,18 +100,10 @@ public class CanvasController extends HttpServlet {
 		        .getEnvironmentContext().getDisplayLocation());
 		forward(resource, request, response);
 	}
-
-	private void forward(String resource, HttpServletRequest request,
+	
+	@Override
+	protected void forward(String resource, HttpServletRequest request,
 	        HttpServletResponse response) throws IOException, ServletException {
-		boolean validResource = resourceExists(resource);
-
-		RequestDispatcher dispatcher = validResource ? getServletContext()
-		        .getRequestDispatcher(resource) : getServletContext()
-		        .getRequestDispatcher(DEFAULT_RESOURCE);
-		dispatcher.forward(request, response);
-	}
-
-	private boolean resourceExists(String path) throws MalformedURLException {
-		return getServletContext().getResource(path) != null;
+		super.forward(resource,DEFAULT_RESOURCE,request,response);
 	}
 }

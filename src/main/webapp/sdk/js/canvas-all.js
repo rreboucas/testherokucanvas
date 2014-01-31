@@ -1,33 +1,16 @@
-/**
- * Copyright (c) 2011-2013 salesforce.com, inc.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification, are permitted provided
- * that the following conditions are met:
- *
- *    Redistributions of source code must retain the above copyright notice, this list of conditions and the
- *    following disclaimer.
- *
- *    Redistributions in binary form must reproduce the above copyright notice, this list of conditions and
- *    the following disclaimer in the documentation and/or other materials provided with the distribution.
- *
- *    Neither the name of salesforce.com, inc. nor the names of its contributors may be used to endorse or
- *    promote products derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
- * TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
- * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- */
 (function(global) {
-  if(global.Sfdc && global.Sfdc.canvas) {
+  if(global.Sfdc && global.Sfdc.canvas && global.Sfdc.canvas.module) {
     return
   }
-  var oproto = Object.prototype, aproto = Array.prototype, doc = global.document, $ = {hasOwn:function(obj, prop) {
+  var extmodules = {};
+  if(global.Sfdc && global.Sfdc.canvas) {
+    for(var key in global.Sfdc.canvas) {
+      if(global.Sfdc.canvas.hasOwnProperty(key)) {
+        extmodules[key] = global.Sfdc.canvas[key]
+      }
+    }
+  }
+  var oproto = Object.prototype, aproto = Array.prototype, doc = global.document, keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/\x3d", $ = {hasOwn:function(obj, prop) {
     return oproto.hasOwnProperty.call(obj, prop)
   }, isUndefined:function(value) {
     var undef;
@@ -80,6 +63,8 @@
         }
       }
     }
+  }, startsWithHttp:function(orig, newUrl) {
+    return $.isNil(orig) ? orig : orig.substring(0, 4) === "http" ? orig : newUrl
   }, map:function(obj, it, ctx) {
     var results = [], nativ = aproto.map;
     if($.isNil(obj)) {
@@ -127,6 +112,19 @@
       }
     }
     return-1
+  }, isEmpty:function(obj) {
+    if(obj == null) {
+      return true
+    }
+    if($.isArray(obj) || $.isString(obj)) {
+      return obj.length === 0
+    }
+    for(var key in obj) {
+      if($.hasOwn(obj, key)) {
+        return false
+      }
+    }
+    return true
   }, remove:function(array, item) {
     var i = $.indexOf(array, item);
     if(i >= 0) {
@@ -165,11 +163,32 @@
     }
     return s.join("\x26").replace(/%20/g, "+")
   }, objectify:function(q) {
-    var o = {};
-    q.replace(new RegExp("([^?\x3d\x26]+)(\x3d([^\x26]*))?", "g"), function($0, $1, $2, $3) {
-      o[$1] = $3
-    });
-    return o
+    var arr, obj = {}, i, p, n, v, e;
+    if($.isNil(q)) {
+      return obj
+    }
+    if(q.substring(0, 1) == "?") {
+      q = q.substring(1)
+    }
+    arr = q.split("\x26");
+    for(i = 0;i < arr.length;i += 1) {
+      p = arr[i].split("\x3d");
+      n = p[0];
+      v = p[1];
+      e = obj[n];
+      if(!$.isNil(e)) {
+        if($.isArray(e)) {
+          e[e.length] = v
+        }else {
+          obj[n] = [];
+          obj[n][0] = e;
+          obj[n][1] = v
+        }
+      }else {
+        obj[n] = v
+      }
+    }
+    return obj
   }, stripUrl:function(url) {
     return $.isNil(url) ? null : url.replace(/([^:]+:\/\/[^\/\?#]+).*/, "$1")
   }, query:function(url, q) {
@@ -192,6 +211,28 @@
     return str.charAt(0).toUpperCase() + str.slice(1)
   }, uncapitalize:function(str) {
     return str.charAt(0).toLowerCase() + str.slice(1)
+  }, decode:function(str) {
+    var output = [], chr1, chr2, chr3 = "", enc1, enc2, enc3, enc4 = "", i = 0;
+    str = str.replace(/[^A-Za-z0-9\+\/\=]/g, "");
+    do {
+      enc1 = keyStr.indexOf(str.charAt(i++));
+      enc2 = keyStr.indexOf(str.charAt(i++));
+      enc3 = keyStr.indexOf(str.charAt(i++));
+      enc4 = keyStr.indexOf(str.charAt(i++));
+      chr1 = enc1 << 2 | enc2 >> 4;
+      chr2 = (enc2 & 15) << 4 | enc3 >> 2;
+      chr3 = (enc3 & 3) << 6 | enc4;
+      output.push(String.fromCharCode(chr1));
+      if(enc3 !== 64) {
+        output.push(String.fromCharCode(chr2))
+      }
+      if(enc4 !== 64) {
+        output.push(String.fromCharCode(chr3))
+      }
+      chr1 = chr2 = chr3 = "";
+      enc1 = enc2 = enc3 = enc4 = ""
+    }while(i < str.length);
+    return output.join("")
   }, validEventName:function(name, res) {
     var ns, parts = name.split(/\./), regex = /^[$A-Z_][0-9A-Z_$]*$/i, reserved = {"sfdc":true, "canvas":true, "force":true, "salesforce":true, "chatter":true};
     $.each($.isArray(res) ? res : [res], function(v) {
@@ -318,40 +359,71 @@
       deactivate()
     }
     return{enable:enable, disable:disable, log:log, error:error}
-  }()}, readyHandlers = [], ready = function() {
-    ready = $.nop;
-    $.each(readyHandlers, $.invoker);
-    readyHandlers = null
-  }, canvas = function(cb) {
+  }()}, readyHandlers = [], canvas = function(cb) {
     if($.isFunction(cb)) {
       readyHandlers.push(cb)
     }
   };
   (function() {
-    var ael = "addEventListener", tryReady = function() {
-      if(doc && /loaded|complete/.test(doc.readyState)) {
-        ready()
-      }else {
-        if(readyHandlers) {
-          if(!$.isNil(global.setTimeout)) {
-            global.setTimeout(tryReady, 30)
-          }
-        }
+    var called = false, isFrame, fn;
+    function ready() {
+      if(called) {
+        return
       }
-    };
-    if(doc && doc[ael]) {
-      doc[ael]("DOMContentLoaded", ready, false)
+      called = true;
+      ready = $.nop;
+      $.each(readyHandlers, $.invoker);
+      readyHandlers = []
     }
-    tryReady();
-    if(global[ael]) {
-      global[ael]("load", ready, false)
+    function tryScroll() {
+      if(called) {
+        return
+      }
+      try {
+        document.documentElement.doScroll("left");
+        ready()
+      }catch(e) {
+        setTimeout(tryScroll, 30)
+      }
+    }
+    if(document.addEventListener) {
+      document.addEventListener("DOMContentLoaded", ready, false)
     }else {
-      if(global.attachEvent) {
-        global.attachEvent("onload", ready)
+      if(document.attachEvent) {
+        try {
+          isFrame = self !== top
+        }catch(e) {
+        }
+        if(document.documentElement.doScroll && !isFrame) {
+          tryScroll()
+        }
+        document.attachEvent("onreadystatechange", function() {
+          if(document.readyState === "complete") {
+            ready()
+          }
+        })
+      }
+    }
+    if(window.addEventListener) {
+      window.addEventListener("load", ready, false)
+    }else {
+      if(window.attachEvent) {
+        window.attachEvent("onload", ready)
+      }else {
+        fn = window.onload;
+        window.onload = function() {
+          if(fn) {
+            fn()
+          }
+          ready()
+        }
       }
     }
   })();
   $.each($, function(fn, name) {
+    canvas[name] = fn
+  });
+  $.each(extmodules, function(fn, name) {
     canvas[name] = fn
   });
   (function() {
@@ -444,6 +516,7 @@
       ctx.params = ctx.params || {state:""};
       ctx.params.state = ctx.params.state || ctx.callback || window.location.pathname;
       ctx.params.display = ctx.params.display || "popup";
+      ctx.params.redirect_uri = $$.startsWithHttp(ctx.params.display, encodeURIComponent(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port) + ctx.params.redirect_uri);
       uri = uri + query(ctx.params);
       childWindow = window.open(uri, "OAuth", "status\x3d0,toolbar\x3d0,menubar\x3d0,resizable\x3d0,scrollbars\x3d1,top\x3d50,left\x3d50,height\x3d500,width\x3d680")
     }
@@ -634,12 +707,9 @@
   $$.module("Sfdc.canvas.xd", module)
 })(Sfdc.canvas, this);
 (function($$) {
-  var pversion, cversion = "30.0";
+  var pversion, cversion = "31.0";
   var module = function() {
     var purl;
-    function startsWithHttp(u, d) {
-      return $$.isNil(u) ? u : u.substring(0, 4) === "http" ? u : d
-    }
     function getTargetOrigin(to) {
       var h;
       if(to === "*") {
@@ -647,7 +717,7 @@
       }
       if(!$$.isNil(to)) {
         h = $$.stripUrl(to);
-        purl = startsWithHttp(h, purl);
+        purl = $$.startsWithHttp(h, purl);
         if(purl) {
           return purl
         }
@@ -655,7 +725,7 @@
       h = $$.document().location.hash;
       if(h) {
         h = decodeURIComponent(h.replace(/^#/, ""));
-        purl = startsWithHttp(h, purl)
+        purl = $$.startsWithHttp(h, purl)
       }
       return purl
     }
@@ -712,11 +782,13 @@
         function findSubscription(event) {
           var s, name = event.name;
           if(name === STR_EVT) {
-            s = subscriptions[name][event.params.topic]
+            if(!$$.isNil(subscriptions[name])) {
+              s = subscriptions[name][event.params.topic]
+            }
           }else {
             s = subscriptions[name]
           }
-          if(!$$.isNil(s) && $$.isFunction(s.onData)) {
+          if(!$$.isNil(s) && ($$.isFunction(s.onData) || $$.isFunction(s.onComplete))) {
             return s
           }
           return null
@@ -839,7 +911,7 @@
           if(config.client.targetOrigin === "*") {
             config.client.targetOrigin = null
           }else {
-            purl = startsWithHttp(config.targetOrigin, purl)
+            purl = $$.startsWithHttp(config.targetOrigin, purl)
           }
           postit(ccb, {type:"ajax", url:url, config:config})
         }, ctx:function(clientscb, client) {
@@ -855,6 +927,12 @@
             sr = s
           }
           return sr
+        }, refreshSignedRequest:function(clientscb) {
+          var id = window.name.substring("canvas-frame-".length), client = {oauthToken:null, instanceId:id, targetOrigin:"*"};
+          postit(clientscb, {type:"refresh", accessToken:client.oauthToken, config:{client:client}})
+        }, repost:function(refresh) {
+          var id = window.name.substring("canvas-frame-".length), client = {oauthToken:null, instanceId:id, targetOrigin:"*"}, r = refresh || false;
+          postit(null, {type:"repost", accessToken:client.oauthToken, config:{client:client}, refresh:r})
         }}
       }();
       var frame = function() {
@@ -901,7 +979,7 @@
       return{services:services, frame:frame, event:event, callback:callback}
     }();
     $$.xd.receive(xdCallback, getTargetOrigin);
-    return{ctx:submodules.services.ctx, ajax:submodules.services.ajax, token:submodules.services.token, version:submodules.services.version, resize:submodules.frame.resize, size:submodules.frame.size, autogrow:submodules.frame.autogrow, subscribe:submodules.event.subscribe, unsubscribe:submodules.event.unsubscribe, publish:submodules.event.publish, signedrequest:submodules.services.signedrequest}
+    return{ctx:submodules.services.ctx, ajax:submodules.services.ajax, token:submodules.services.token, version:submodules.services.version, resize:submodules.frame.resize, size:submodules.frame.size, autogrow:submodules.frame.autogrow, subscribe:submodules.event.subscribe, unsubscribe:submodules.event.unsubscribe, publish:submodules.event.publish, signedrequest:submodules.services.signedrequest, refreshSignedRequest:submodules.services.refreshSignedRequest, repost:submodules.services.repost}
   }();
   $$.module("Sfdc.canvas.client", module)
 })(Sfdc.canvas);

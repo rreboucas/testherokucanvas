@@ -24,6 +24,11 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVE
 POSSIBILITY OF SUCH DAMAGE.
 --%>
 
+<%--
+NOTE: This page is deprecated as of Spring 2014 release, but is here for backward compatibility
+purposes. The CanvasController should be used instead which should be mapped to the "/canvas" resource.
+ --%>
+
 <%@ page import="java.util.Map" %>
 <%
     // Pull the signed request out of the request body.

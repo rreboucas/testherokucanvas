@@ -12,9 +12,17 @@
 		<servlet-name>canvas</servlet-name>
 		<servlet-class>servlets.CanvasController</servlet-class>
 	</servlet>
+    <servlet>
+      <servlet-name>callback</servlet-name>
+      <servlet-class>servlets.CallbackController</servlet-class>
+    </servlet>
 	<servlet-mapping>
 		<servlet-name>canvas</servlet-name>
 		<url-pattern>/canvas</url-pattern>
 	</servlet-mapping>
+    <servlet-mapping>
+      <servlet-name>callback</servlet-name>
+      <url-pattern>/callback</url-pattern>
+    </servlet-mapping>
     
 </web-app>
