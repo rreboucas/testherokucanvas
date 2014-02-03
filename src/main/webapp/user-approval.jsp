@@ -57,7 +57,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         params: {
                             response_type : "token",
                             client_id : consumerKey,
-                            redirect_uri : encodeURIComponent("/callback") // TODO - Make util in canvas to dynamically build this based on relative url.
+                            redirect_uri : encodeURIComponent("/callback")
                         }});
             }
             return false;
