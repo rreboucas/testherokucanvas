@@ -40,7 +40,7 @@ public class CanvasEnvironmentContext {
     private Dimensions dimensions;
     private SystemVersion version;
     private Map<String,Object> parameters;
-    private Map<String,Object> entity;
+    private Map<String,Object> record;
 
     /**
      * Returns the url of the current location.
@@ -119,17 +119,17 @@ public class CanvasEnvironmentContext {
         this.parameters = parameters;
     }
     
-    @org.codehaus.jackson.annotate.JsonProperty("entity")
-    public Map<String, Object> getEntity() {
-        if (null == this.entity){
-            this.entity = new HashMap<String, Object>();
+    @org.codehaus.jackson.annotate.JsonProperty("record")
+    public Map<String, Object> getRecord() {
+        if (null == this.record){
+            this.record = new HashMap<String, Object>();
         }
-        return this.entity;
+        return this.record;
     }
 
-    @org.codehaus.jackson.annotate.JsonProperty("entity")
-    public void setEntity(Map<String, Object> entity) {
-        this.entity = entity;
+    @org.codehaus.jackson.annotate.JsonProperty("record")
+    public void setRecord(Map<String, Object> record) {
+        this.record = record;
     }
 
     @Override
