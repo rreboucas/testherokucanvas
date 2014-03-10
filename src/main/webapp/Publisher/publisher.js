@@ -68,8 +68,8 @@
             if (!mobile) {
                 $$.byId('name').innerHTML = sr.context.user.firstName + " " + sr.context.user.lastName;
                 $$.byId('location').innerHTML = sr.context.environment.displayLocation;
-                $$.byId('subject-type').innerHTML = null != sr.context.environment.entity.attributes ? 
-                		sr.context.environment.entity.attributes.type : 
+                $$.byId('subject-type').innerHTML = null != sr.context.environment.record.attributes ? 
+                		sr.context.environment.record.attributes.type : 
             			"Unknown";
                 myPublisher.canvasOptions($$.byId('header-enabled'), "HideHeader");
                 myPublisher.canvasOptions($$.byId('share-enabled'), "HideShare");

@@ -52,9 +52,9 @@ Below is a sample of that information:
       <td><b>Company: </b></td>
       <td><span id='company'>${canvasRequest.context.organizationContext.name}</span></td>
     </tr>
-    <c:if test="${!empty canvasRequest.context.environmentContext.entity.Id}" >
+    <c:if test="${!empty canvasRequest.context.environmentContext.record.Id}" >
       <tr>
-        <td colspan="2">You are currently viewing <b>${canvasRequest.context.environmentContext.entity.attributes.type} ${canvasRequest.context.environmentContext.entity.Id}</b></td>
+        <td colspan="2">You are currently viewing <b>${canvasRequest.context.environmentContext.record.attributes.type} ${canvasRequest.context.environmentContext.record.Id}</b></td>
       </tr>
     </c:if>
     
