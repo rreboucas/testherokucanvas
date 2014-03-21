@@ -57,6 +57,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         params: {
                             response_type : "token",
                             client_id : consumerKey,
+                            display : "${ua.device.mobile?'touch':'popup'}",
                             redirect_uri : encodeURIComponent("/callback")
                         }});
             }
