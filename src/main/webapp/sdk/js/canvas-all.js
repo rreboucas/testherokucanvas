@@ -1201,7 +1201,8 @@
         /**
          * @name Sfdc.canvas.oauth#checkChildWindowStatus
          * @function
-         * @description Refreshes the parent window only if the child window is closed.
+         * @description Refreshes the parent window only if the child window is closed. This
+         * method is no longer used. Leaving in for backwards compatability.
          */
         function checkChildWindowStatus() {
             if (!childWindow || childWindow.closed) {
@@ -1225,9 +1226,23 @@
             // raised because user closed child window, or because user is playing with F5 key.
             // NOTE: We can not trust on "onUnload" event of child window, because if user reload or refresh
             // such window in fact he is not closing child. (However "onUnload" event is raised!)
-            //checkChildWindowStatus();
+
+            var retry = 0, maxretries = 10;
+
+            // Internal check child window status with max retry logic
+            function cws() {
+
+                retry++;
+                if (!childWindow || childWindow.closed) {
+                    refresh();
+                }
+                else if (retry < maxretries) {
+                    setTimeout(cws, 50);
+                }
+            }
+
             parseHash(hash);
-            setTimeout(window.Sfdc.canvas.oauth.checkChildWindowStatus, 50);
+            setTimeout(cws, 50);
         }
 
         /**
