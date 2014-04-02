@@ -1,3 +1,29 @@
+/**
+ * Copyright (c) 2011, salesforce.com, inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification, are permitted provided
+ * that the following conditions are met:
+ *
+ *    Redistributions of source code must retain the above copyright notice, this list of conditions and the
+ *    following disclaimer.
+ *
+ *    Redistributions in binary form must reproduce the above copyright notice, this list of conditions and
+ *    the following disclaimer in the documentation and/or other materials provided with the distribution.
+ *
+ *    Neither the name of salesforce.com, inc. nor the names of its contributors may be used to endorse or
+ *    promote products derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+ * TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+/*jslint bitwise:false */
 (function (global) {
 
     "use strict";
@@ -23,12 +49,14 @@
     var oproto = Object.prototype,
         aproto = Array.prototype,
         doc = global.document,
+        keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
+
         /**
         * @class Canvas
         * @exports $ as Sfdc.canvas
         */
         // $ functions
-        // The canvas global object is made available in the global scope.  The reveal to the global scope is done later.
+        // The Sfdc.canvas global object is made available in the global scope.  The reveal to the global scope is done later.
         $ = {
 
             // type utilities
@@ -194,6 +222,18 @@
             },
             
             /**
+             * @description Convenience method to prepend a method with a fully qualified url, if the
+             * method does not begin with http protocol.
+             * @param {String} orig The original url to check
+             * @param {String} newUrl The new url to use if it does not begin with http(s) protocol.
+             * @returns {String} orig if the url begins with http, or newUrl if it does not.
+             */
+            startsWithHttp: function(orig, newUrl) {
+                return  !$.isString(orig) ? orig : (orig.substring(0, 4) === "http") ? orig : newUrl;
+            },
+
+            
+            /**
             * @description Creates a new array with the results of calling the
                 function on each element in the object.
             * @param {Object} obj The object to use
@@ -293,6 +333,28 @@
             },
             
             /**
+             * @description Returns true if the object is null, or the object has no 
+             * enumerable properties/attributes.
+             * @param {Object} obj The object to check
+             * @returns {Boolean} <code>true</code> if the object or value is null, or is an object with
+             * no enumerable properties/attributes.
+             */            
+            isEmpty: function(obj){
+                if (obj === null){
+                    return true;
+                }
+                if ($.isArray(obj) || $.isString(obj)){
+                	return obj.length === 0;
+                }
+                for (var key in obj){
+                    if ($.hasOwn(obj, key)){
+                        return false;
+                    }
+                } 
+                return true;
+            },
+            
+            /**
             * @description Removes an element from an array.
             * @param {Array} array The array to modify
             * @param {Object} item The element to remove from the array
@@ -350,19 +412,36 @@
 
             /**
              * @description Converts a query string into an object.
-             * Note: this doesn't handle multi-value parameters.  For instance,
-             * passing in <code>?param=value1&​param=value2</code> will not return <code>['value1', 'value2']</code>
-             *
-             * @param {String} q ?param1=value1&amp;param2=value2
-             * @return {Object} {param1 : 'value1', param2 : 'value2'}
+             * @param {String} q param1=value1&amp;param1=value2&amp;param2=value2
+             * @return {Object} {param1 : ['value1', 'value2'], param2 : 'value2'}
              */
             objectify : function (q) {
-                var o = {};
-                q.replace(
-                    new RegExp("([^?=&]+)(=([^&]*))?", "g"),
-                    function($0, $1, $2, $3) { o[$1] = $3; }
-                );
-                return o;
+                var arr, obj = {}, i, p, n, v, e;
+                if ($.isNil(q)) {return obj;}
+                if (q.substring(0, 1) == '?') {
+                    q = q.substring(1);
+                }
+                arr = q.split('&');
+                for (i = 0; i < arr.length; i += 1) {
+                    p = arr[i].split('=');
+                    n = p[0];
+                    v = p[1];
+                    e = obj[n];
+                    if (!$.isNil(e)) {
+                        if ($.isArray(e)) {
+                            e[e.length] = v;
+                        }
+                        else {
+                            obj[n] = [];
+                            obj[n][0] = e;
+                            obj[n][1] = v;
+                        }
+                    }
+                    else {
+                        obj[n] = v;
+                    }
+                }
+                return obj;
             },
 
             /**
@@ -425,6 +504,37 @@
             uncapitalize: function(str) {
                 return str.charAt(0).toLowerCase() + str.slice(1);
             },
+
+            /**
+             * @description decode a base 64 string.
+             * @param {String} str - base64 encoded string
+             * @return decoded string
+             */
+            decode : function(str) {
+                var output = [], chr1, chr2, chr3 = "", enc1, enc2, enc3, enc4 = "", i = 0;
+                str = str.replace(/[^A-Za-z0-9\+\/\=]/g, "");
+
+                do {
+                    enc1 = keyStr.indexOf(str.charAt(i++));
+                    enc2 = keyStr.indexOf(str.charAt(i++));
+                    enc3 = keyStr.indexOf(str.charAt(i++));
+                    enc4 = keyStr.indexOf(str.charAt(i++));
+                    chr1 = (enc1 << 2) | (enc2 >> 4);
+                    chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
+                    chr3 = ((enc3 & 3) << 6) | enc4;
+                    output.push(String.fromCharCode(chr1));
+                    if (enc3 !== 64) {
+                        output.push(String.fromCharCode(chr2));
+                    }
+                    if (enc4 !== 64) {
+                        output.push(String.fromCharCode(chr3));
+                    }
+                    chr1 = chr2 = chr3 = "";
+                    enc1 = enc2 = enc3 = enc4 = "";
+                } while (i < str.length);
+                return output.join('');
+            },
+
 
             // Events
             //--------
@@ -691,16 +801,10 @@
 
         readyHandlers = [],
 
-        ready = function () {
-            ready = $.nop;
-            $.each(readyHandlers, $.invoker);
-            readyHandlers = null;
-        },
-
-       /**
-        * @description 
-        * @param {Function} cb The function to run when ready.
-        */
+        /**
+         * @description
+         * @param {Function} cb The function to run when ready.
+         */
         canvas = function (cb) {
             if ($.isFunction(cb)) {
                 readyHandlers.push(cb);
@@ -721,7 +825,7 @@
                 called = true;
                 ready = $.nop;
                 $.each(readyHandlers, $.invoker);
-                readyHandlers = null;
+                readyHandlers = [];
             }
 
             function tryScroll(){
@@ -739,7 +843,7 @@
             } else if ( document.attachEvent ) {  // IE
 
                 try {
-                    isFrame = window.frameElement !== null;
+                    isFrame = self !== top;
                 } catch(e) {}
 
                 // IE, the document is not inside a frame
