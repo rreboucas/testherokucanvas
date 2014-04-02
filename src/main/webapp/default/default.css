@@ -32,7 +32,21 @@ a:hover {
     width : 99%;
 }
 
+#speech-input-field {
+    width: 350px;
+    height: 30px;
+    padding: 6px 15px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    outline: 0;
+}
 
+#chatter-submit {
+    clear: both;
+    width: 48px;
+    height:24px;
+    background: #666666 url(/images/share.png) no-repeat;
+}
 
 #page {
     background-color: #FFFFFF;

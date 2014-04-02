@@ -35,6 +35,7 @@ POSSIBILITY OF SUCH DAMAGE.
     <script type="text/javascript" src="/scripts/json2.js"></script>
     <script type="text/javascript" src="/sdk/js/canvas-all.js"></script>
     <script type="text/javascript" src="/default/tabs.js"></script>
+    <script type="text/javascript" src="/scripts/chatter-talk.js"></script>
 
     <script>
         function resetSize(newDimensions) {
@@ -68,6 +69,7 @@ POSSIBILITY OF SUCH DAMAGE.
             <a href="javascript:;" onclick="resetSize()" class="tabLink " id="resize">Resize</a>
             <a href="javascript:;" onclick="resetSize()" class="tabLink " id="events">Events</a>
             <a href="javascript:;" onclick="resetSize()" class="tabLink " id="scroll">Scrolling</a>
+            <a href="javascript:;" onclick="resetSize()" class="tabLink " id="api">Api</a>
         </div>
 
         <div class="tabcontent paddingAll" id="context-1">
@@ -83,6 +85,9 @@ POSSIBILITY OF SUCH DAMAGE.
         </div>
         <div class="tabcontent paddingAll hide" id="scroll-1">
             <jsp:include page="scroll.jsp"/>
+        </div>
+        <div class="tabcontent paddingAll hide" id="api-1">
+            <jsp:include page="api.jsp"/>
         </div>
         <div id="footercont">
             <div id="footerleft">
