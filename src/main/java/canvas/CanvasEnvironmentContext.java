@@ -36,6 +36,7 @@ public class CanvasEnvironmentContext {
 
     private String locationUrl;
     private String displayLocation;
+    private String sublocation;
     private String uiTheme;
     private Dimensions dimensions;
     private SystemVersion version;
@@ -67,6 +68,20 @@ public class CanvasEnvironmentContext {
     @org.codehaus.jackson.annotate.JsonProperty("displayLocation")
     public void setDisplayLocation(String displayLocation) {
         this.displayLocation = displayLocation;
+    }
+
+    /**
+     * Returns the sublocation where the app is being displayed. Usually only applies to 
+     * mobile devices.
+     */
+    @org.codehaus.jackson.annotate.JsonProperty("sublocation")
+    public String getSublocation() {
+        return sublocation;
+    }
+
+    @org.codehaus.jackson.annotate.JsonProperty("sublocation")
+    public void setSublocation(String sublocation) {
+        this.sublocation = sublocation;
     }
 
     /**

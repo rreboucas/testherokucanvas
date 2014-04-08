@@ -161,12 +161,12 @@ Streaming api event names should be in the form
     <tr>
       <td width="30%"><b>Enter event text to send:</b></td>
       <td width="55%"><span><input id="event-payload" type="text"/></span></td>
-      <td width="*"><input onclick="fire();" type="submit" value="Fire!"></input></td>
+      <td width="*"><input class="event-button" onclick="fire();" type="submit" value="Fire!"></input></td>
     </tr>
     <tr>
       <td><b>Subscribe to event:</b></td>
       <td><span><input id="new-topic" type="text"/></span></td>
-      <td><input onclick="subscribe(document.getElementById('new-topic').value);document.getElementById('new-topic').value='';" type="submit" value="Subscribe"></input></td>
+      <td><input class="event-button" onclick="subscribe(document.getElementById('new-topic').value);document.getElementById('new-topic').value='';" type="submit" value="Subscribe"></input></td>
     </tr>
     <tr>
       <td><b>Current subscriptions:</b></td>
