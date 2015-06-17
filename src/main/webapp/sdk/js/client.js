@@ -31,7 +31,7 @@
 
     "use strict";
 
-    var pversion, cversion = "31.0";
+    var pversion, cversion = "34.0";
 
     var module =   (function() /**@lends module */ {
 
