@@ -25,6 +25,7 @@ POSSIBILITY OF SUCH DAMAGE.
 --%>
 
 <%@ page import="canvas.SignedRequest" %>
+<%@ page import="java.util.Map" %>
 <%
     if (request.getAttribute("canvasRequest") == null) {%>
         This App must be invoked via a signed request!<%
