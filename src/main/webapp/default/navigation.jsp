@@ -56,12 +56,12 @@ Example of Navigation Events from Canvas App to Salesforce for Oracle to test mo
 <table>
     <tr>
         <td></td>
-        <td><input type='button' value='Navigate to Record' onclick="NavToRecord();" type="submit"/></td>
+        <td><input type='button' value='Nav to Record' onclick="NavToRecord();" type="submit"/></td>
         <td></td>
     </tr>
     <tr>
         <td></td>
-        <td><input type='button' value='Open external URL (eg. Generate Proposal)' onclick="NavToURL();" type="submit"/></td>
+        <td><input type='button' value='Open URL (eg. Generate Proposal)' onclick="NavToURL();" type="submit"/></td>
         <td></td>
     </tr>
 </table>
