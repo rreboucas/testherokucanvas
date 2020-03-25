@@ -29,7 +29,7 @@ POSSIBILITY OF SUCH DAMAGE.
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Force.com Canvas Java Quick Start</title>
+        <title>Canvas App Example - Rodrigo Reboucas</title>
         <link rel="stylesheet" type="text/css" href="/sdk/css/canvas.css" />
     </head>
     <body>
