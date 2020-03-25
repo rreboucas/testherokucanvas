@@ -32,7 +32,7 @@ POSSIBILITY OF SUCH DAMAGE.
             payload : '{recordId: "00641000008BFX7AAO", view: "detail"}'
         });
         
-        System.out.println ("Fired NavToRecord: ");
+        console.log("Fired NavToRecord: ");
         return true;
     }
 
@@ -43,7 +43,7 @@ POSSIBILITY OF SUCH DAMAGE.
             name : 's1.navigateToURL',
             payload : '{url: "https://appexchange.salesforce.com/appxListingDetail?listingId=a0N300000016aXSEAY", isredirect: “true”}'
         });
-        System.out.println ("Fired NavToURL: ");
+        console.log("Fired NavToURL: ");
         return true;
     }
 
