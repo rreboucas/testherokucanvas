@@ -54,6 +54,17 @@ POSSIBILITY OF SUCH DAMAGE.
         return true;
     }
 
+    function createAccount() {
+
+        console.log("Fired NavToURL: ");
+        Sfdc.canvas.client.publish(sr.client,{
+            name : 's1.createRecord',
+            payload : '{entityName: "Account"}'
+        });
+        
+        return true;
+    }
+
 </script>
 <p>
 Example of Navigation Events from Canvas App to Salesforce for Oracle to test mobile navigation
@@ -68,6 +79,11 @@ Example of Navigation Events from Canvas App to Salesforce for Oracle to test mo
     <tr>
         <td></td>
         <td><input type='button' value='Open URL (eg. Generate Proposal)' onclick='NavToURL();' type="submit"/></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td><input type='button' value='Create Account' onclick='createAccount();' /></td>
         <td></td>
     </tr>
 </table>
