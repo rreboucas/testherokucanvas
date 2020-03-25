@@ -59,7 +59,7 @@ POSSIBILITY OF SUCH DAMAGE.
         console.log("Fired NavToURL: ");
         Sfdc.canvas.client.publish(sr.client,{
             name : 's1.createRecord',
-            payload : '{"entityName": "Account"}'
+            payload : '"entityName": "Account"'
         });
         
         return true;
