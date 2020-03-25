@@ -26,24 +26,23 @@ POSSIBILITY OF SUCH DAMAGE.
 <script type="text/javascript" src="/sdk/js/client.js"></script>
 <script type="text/javascript">
     function NavToRecord(){
-
+        Console.log("Fired NavToRecord: ");
         Sfdc.canvas.client.publish(sr.client,{
-            name : 's1.navigateToSObject',
+            name : 'navigateToSObject',
             payload : '{recordId: "00641000008BFX7AAO", view: "detail"}'
         });
         
-        console.log("Fired NavToRecord: ");
         return true;
     }
 
     function NavToURL(){
 
-
+        Console.log("Fired NavToURL: ");
         Sfdc.canvas.client.publish(sr.client,{
-            name : 's1.navigateToURL',
+            name : 'navigateToURL',
             payload : '{url: "https://appexchange.salesforce.com/appxListingDetail?listingId=a0N300000016aXSEAY", isredirect: “true”}'
         });
-        console.log("Fired NavToURL: ");
+        
         return true;
     }
 
