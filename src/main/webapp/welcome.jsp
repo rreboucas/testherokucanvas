@@ -41,9 +41,7 @@ POSSIBILITY OF SUCH DAMAGE.
           <div id="canvas-content">
               <h2>
                   <br/>
-                  Your Heroku Java application is up and running.
-                  To see Force.com Canvas Framework specific functionality, please use this app in a Force.com Canvas
-                  enabled organization.
+                  Rodrigo Reboucas
                   <p/>If you are seeing this page inside of an app within Salesforce,
                   you must set the "Access Method" for the application to "Signed Request (POST)".
               </h2>
