@@ -26,7 +26,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 <script type="text/javascript">
     function NavToRecord() {
-        Console.log("Fired NavToRecord: ");
+        console.log("Fired NavToRecord: ");
         Sfdc.canvas.client.publish(sr.client,{
             name : 'navigateToSObject',
             payload : '{recordId: "00641000008BFX7AAO", view: "detail"}'
@@ -37,7 +37,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
     function NavToURL() {
 
-        Console.log("Fired NavToURL: ");
+        console.log("Fired NavToURL: ");
         Sfdc.canvas.client.publish(sr.client,{
             name : 'navigateToURL',
             payload : '{url: "https://appexchange.salesforce.com/appxListingDetail?listingId=a0N300000016aXSEAY", isredirect: “true”}'
