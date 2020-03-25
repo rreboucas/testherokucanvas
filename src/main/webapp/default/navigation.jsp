@@ -43,7 +43,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
     function NavToURL() {
         var payloadValue = {url: 'https://appexchange.salesforce.com/appxListingDetail?listingId=a0N300000016aXSEAY', isredirect: true};
-        console.log("Fired NavToURL: ");
+        console.log("Fired NavToURL : ");
         Sfdc.canvas.client.publish(sr.client,{
             name : 's1.navigateToURL',
             payload : payloadValue
