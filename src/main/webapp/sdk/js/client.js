@@ -359,6 +359,7 @@
                      *});
                      */
                     publish : function(client, e) {
+                        console.log("Events passed: " + e);
                         if (!$$.isNil(e) && !$$.isNil(e.name)) {
                             validName(e.name);
                             if (validateClient(client)) {
