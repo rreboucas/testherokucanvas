@@ -32,7 +32,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
     function NavToRecord() {
         
-        var payloadValue = '{recordId: "00641000008BFX7AAO", view: "true"}'
+        var payloadValue = '{recordId: "00641000008BFX7AAO", view: "detail"}'
         console.log("Fired NavToRecord - payloadValue: " + payloadValue);
 
         Sfdc.canvas.client.publish(sr.client,{
@@ -48,7 +48,7 @@ POSSIBILITY OF SUCH DAMAGE.
         console.log("Fired NavToURL: ");
         Sfdc.canvas.client.publish(sr.client,{
             name : 's1.navigateToURL',
-            payload : '{"url": "", "isredirect": true}'
+            payload : '{"url": "https://appexchange.salesforce.com/appxListingDetail?listingId=a0N300000016aXSEAY", "isredirect": true}'
         });
         
         return true;

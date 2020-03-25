@@ -923,12 +923,13 @@
             postit(null, {type:"unsubscribe", config:{client:client}, subscriptions:subs})
           }
         }, publish:function(client, e) {
-          console.log("Events passed: " + e);
+          
           console.log("Event name: " + e.name);
           console.log("Event payload: " + e.payload);
           if(!$$.isNil(e) && !$$.isNil(e.name)) {
             validName(e.name, ["s1"]);
             if(validateClient(client)) {
+              console.log("Got to publish line" + e);
               postit(null, {type:"publish", config:{client:client}, event:e})
             }
           }
