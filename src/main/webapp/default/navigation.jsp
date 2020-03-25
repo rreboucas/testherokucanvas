@@ -29,7 +29,7 @@ POSSIBILITY OF SUCH DAMAGE.
         console.log("Fired NavToRecord: ");
         Sfdc.canvas.client.publish(sr.client,{
             name : 's1.navigateToSObject',
-            payload : '{recordId: "00641000008BFX7AAO", view: "detail"}'
+            payload : '{"recordId": "00641000008BFX7AAO", "view": "detail"}'
         });
         
         return true;
@@ -40,7 +40,7 @@ POSSIBILITY OF SUCH DAMAGE.
         console.log("Fired NavToURL: ");
         Sfdc.canvas.client.publish(sr.client,{
             name : 's1.navigateToURL',
-            payload : '{url: "https://appexchange.salesforce.com/appxListingDetail?listingId=a0N300000016aXSEAY", isredirect: “true”}'
+            payload : '{"url": "https://appexchange.salesforce.com/appxListingDetail?listingId=a0N300000016aXSEAY", "isredirect": true}'
         });
         
         return true;
