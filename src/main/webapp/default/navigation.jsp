@@ -23,9 +23,9 @@ HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABI
 NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 --%>
-<script type="text/javascript" src="/sdk/js/client.js"></script>
+
 <script type="text/javascript">
-    function NavToRecord(){
+    function NavToRecord() {
         Console.log("Fired NavToRecord: ");
         Sfdc.canvas.client.publish(sr.client,{
             name : 'navigateToSObject',
@@ -35,7 +35,7 @@ POSSIBILITY OF SUCH DAMAGE.
         return true;
     }
 
-    function NavToURL(){
+    function NavToURL() {
 
         Console.log("Fired NavToURL: ");
         Sfdc.canvas.client.publish(sr.client,{
@@ -54,12 +54,12 @@ Example of Navigation Events from Canvas App to Salesforce for Oracle to test mo
 <table>
     <tr>
         <td></td>
-        <td><input type='button' value='Nav to Record' onclick="NavToRecord();" type="submit"/></td>
+        <td><input type='button' value='Nav to Record' onclick='NavToRecord();' type="submit"/></td>
         <td></td>
     </tr>
     <tr>
         <td></td>
-        <td><input type='button' value='Open URL (eg. Generate Proposal)' onclick="NavToURL();" type="submit"/></td>
+        <td><input type='button' value='Open URL (eg. Generate Proposal)' onclick='NavToURL();' type="submit"/></td>
         <td></td>
     </tr>
 </table>
