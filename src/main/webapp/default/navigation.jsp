@@ -26,9 +26,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 <script type="text/javascript">
 
-    var recordIdval = "00641000008BFX7AAO";
-    var viewType = "detail";
-    var urlVal = "https://appexchange.salesforce.com/appxListingDetail?listingId=a0N300000016aXSEAY";
+    
 
     function NavToRecord() {
         
@@ -44,22 +42,22 @@ POSSIBILITY OF SUCH DAMAGE.
     }
 
     function NavToURL() {
-
+        var payloadValue = {url: 'https://appexchange.salesforce.com/appxListingDetail?listingId=a0N300000016aXSEAY', isredirect: "true"};
         console.log("Fired NavToURL: ");
         Sfdc.canvas.client.publish(sr.client,{
             name : 's1.navigateToURL',
-            payload : '{"url": "https://appexchange.salesforce.com/appxListingDetail?listingId=a0N300000016aXSEAY", "isredirect": true}'
+            payload : payloadValue
         });
         
         return true;
     }
 
     function createAccount() {
-
+        var payloadValue = {entityName: 'Account'};
         console.log("Fired NavToURL: ");
         Sfdc.canvas.client.publish(sr.client,{
             name : 's1.createRecord',
-            payload : '"entityName": "Account"'
+            payload : payloadValue
         });
         
         return true;
