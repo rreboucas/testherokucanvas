@@ -23,24 +23,29 @@ HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABI
 NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 --%>
+<script type="text/javascript" src="/sdk/js/client.js"></script>
 <script type="text/javascript">
-    function displaySize() {
-        var sizes = Sfdc.canvas.client.size();
-        var sizeElem = document.getElementById('dimensions');
-        sizeElem.innerHTML = "Width: " + sizes.widths.pageWidth + ", Height: " + sizes.heights.pageHeight;
+    function NavToRecord(){
+        var event = {name:"s1.navigateToSObject", payload: {'00641000008BFX7AAO'[, detail]}};
+
+        if (payload){
+            Sfdc.canvas.client.publish(sr.client,{
+                name : 'navigateToSObject',
+                payload : '{recordId: "00641000008BFX7AAO", view: detail}'
+            });
+        }
+        return true;
     }
 
-    function adjustHeight(inc) {
-        var dim = Sfdc.canvas.client.size(sr.client);
-        console.log("Dim ", dim.heights.pageHeight);
-        Sfdc.canvas.client.resize(sr.client, {height : dim.heights.pageHeight + inc + "px"});
-        displaySize();
-    }
-    function adjustWidth(inc) {
-        var dim = Sfdc.canvas.client.size(sr.client);
-        console.log("Dim ", dim.widths.pageWidth);
-        Sfdc.canvas.client.resize(sr.client, {width : dim.widths.pageWidth + inc + "px"});
-        displaySize();
+    function NavToURL(){
+
+        if (payload){
+            Sfdc.canvas.client.publish(sr.client,{
+                name : 'navigateToURL',
+                payload : '{url: "https://appexchange.salesforce.com/appxListingDetail?listingId=a0N300000016aXSEAY", isredirect: “false”}'
+            });
+        }
+        return true;
     }
 
 </script>
@@ -51,12 +56,12 @@ Example of Navigation Events from Canvas App to Salesforce for Oracle to test mo
 <table>
     <tr>
         <td></td>
-        <td><input type='button' value='Navigate to Record' onclick='adjustHeight(-10)'/></td>
+        <td><input type='button' value='Navigate to Record' onclick="NavToRecord();" type="submit"/></td>
         <td></td>
     </tr>
     <tr>
         <td></td>
-        <td><input type='button' value='Open external URL (eg. Generate Proposal)' onclick='adjustHeight(10)'/></td>
+        <td><input type='button' value='Open external URL (eg. Generate Proposal)' onclick="NavToURL();" type="submit"/></td>
         <td></td>
     </tr>
 </table>
