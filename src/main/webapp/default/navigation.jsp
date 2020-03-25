@@ -32,7 +32,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
     function NavToRecord() {
         
-        var payloadValue = {recordId: 00641000008BFX7AAO, view: "detail"};
+        var payloadValue = {recordId: '00641000008BFX7AAO', view: "detail"};
         console.log("Fired NavToRecord - payloadValue: " + payloadValue);
 
         Sfdc.canvas.client.publish(sr.client,{
