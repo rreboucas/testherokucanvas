@@ -32,7 +32,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
     function NavToRecord() {
         
-        var payloadValue = '{RecordID: ' + recordIdval + ', view: + ' + viewType + '}'
+        var payloadValue = '{"recordId": "00641000008BFX7AAO", "view": "true"}'
         console.log("Fired NavToRecord - payloadValue: " + payloadValue);
 
         Sfdc.canvas.client.publish(sr.client,{
