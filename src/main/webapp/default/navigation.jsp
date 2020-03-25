@@ -28,7 +28,7 @@ POSSIBILITY OF SUCH DAMAGE.
     function NavToRecord() {
         console.log("Fired NavToRecord: ");
         Sfdc.canvas.client.publish(sr.client,{
-            name : 'navigateToSObject',
+            name : 's1.navigateToSObject',
             payload : '{recordId: "00641000008BFX7AAO", view: "detail"}'
         });
         
@@ -39,7 +39,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
         console.log("Fired NavToURL: ");
         Sfdc.canvas.client.publish(sr.client,{
-            name : 'navigateToURL',
+            name : 's1.navigateToURL',
             payload : '{url: "https://appexchange.salesforce.com/appxListingDetail?listingId=a0N300000016aXSEAY", isredirect: “true”}'
         });
         
