@@ -47,7 +47,7 @@ POSSIBILITY OF SUCH DAMAGE.
         console.log("Fired NavToRecord - payloadValue: " + payloadValue);
 
         Sfdc.canvas.client.publish(sr.client,{
-            name : 'custom.navToRecord',
+            name : 'oracle.navToRecord',
             payload : payloadValue
         });
         
@@ -69,7 +69,7 @@ POSSIBILITY OF SUCH DAMAGE.
         var payloadValue = {url: 'https://appexchange.salesforce.com/appxListingDetail?listingId=a0N300000016aXSEAY', isredirect: true};
         console.log("Fired NavToURL : ");
         Sfdc.canvas.client.publish(sr.client,{
-            name : 's1.navigateToURL',
+            name : 'oracle.navigateToURL',
             payload : payloadValue
         });
         
@@ -111,11 +111,6 @@ Example of Navigation Events from Canvas App to Salesforce for Oracle to test mo
     <tr>
         <td></td>
         <td><input type='button' value='Open URL (custom event)' onclick='NavToURLCustom();' type="submit"/></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td></td>
-        <td><input type='button' value='Create Account (s1 event)' onclick='createAccount();' /></td>
         <td></td>
     </tr>
 </table>
