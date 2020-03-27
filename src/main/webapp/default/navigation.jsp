@@ -41,7 +41,31 @@ POSSIBILITY OF SUCH DAMAGE.
         return true;
     }
 
+    function NavToRecordCustom() {
+        
+        var payloadValue = {recordId: '00641000008BFX7AAO', view: "detail"};
+        console.log("Fired NavToRecord - payloadValue: " + payloadValue);
+
+        Sfdc.canvas.client.publish(sr.client,{
+            name : 'custom.navToRecord',
+            payload : payloadValue
+        });
+        
+        return true;
+    }
+
     function NavToURL() {
+        var payloadValue = {url: 'https://appexchange.salesforce.com/appxListingDetail?listingId=a0N300000016aXSEAY', isredirect: true};
+        console.log("Fired NavToURL : ");
+        Sfdc.canvas.client.publish(sr.client,{
+            name : 's1.navigateToURL',
+            payload : payloadValue
+        });
+        
+        return true;
+    }
+
+    function NavToURLCustom() {
         var payloadValue = {url: 'https://appexchange.salesforce.com/appxListingDetail?listingId=a0N300000016aXSEAY', isredirect: true};
         console.log("Fired NavToURL : ");
         Sfdc.canvas.client.publish(sr.client,{
@@ -71,17 +95,27 @@ Example of Navigation Events from Canvas App to Salesforce for Oracle to test mo
 <table>
     <tr>
         <td></td>
-        <td><input type='button' value='Nav to Record' onclick='NavToRecord();' type="submit"/></td>
+        <td><input type='button' value='Nav to Record (s1 event)' onclick='NavToRecord();' type="submit"/></td>
         <td></td>
     </tr>
     <tr>
         <td></td>
-        <td><input type='button' value='Open URL (eg. Generate Proposal)' onclick='NavToURL();' type="submit"/></td>
+        <td><input type='button' value='Nav to Record (custom event)' onclick='NavToRecordCustom();' type="submit"/></td>
         <td></td>
     </tr>
     <tr>
         <td></td>
-        <td><input type='button' value='Create Account' onclick='createAccount();' /></td>
+        <td><input type='button' value='Open URL (s1 event)' onclick='NavToURL();' type="submit"/></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td><input type='button' value='Open URL (custom event)' onclick='NavToURLCustom();' type="submit"/></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td><input type='button' value='Create Account (s1 event)' onclick='createAccount();' /></td>
         <td></td>
     </tr>
 </table>
