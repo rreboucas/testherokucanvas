@@ -76,6 +76,14 @@ POSSIBILITY OF SUCH DAMAGE.
         return true;
     }
 
+    function GetSignedRequest() {
+        
+        console.log("Get Signed Request entered ");
+        var signReq = Sfdc.canvas.client.repost();
+        
+        console.log("signReq: " + signReq);
+    }
+
     function createAccount() {
         var payloadValue = {entityName: 'Account'};
         console.log("Fired NavToURL: ");
