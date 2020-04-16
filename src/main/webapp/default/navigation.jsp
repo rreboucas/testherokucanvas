@@ -113,4 +113,9 @@ Example of Navigation Events from Canvas App to Salesforce for Oracle to test mo
         <td><input type='button' value='Open URL (custom event)' onclick='NavToURLCustom();' type="submit"/></td>
         <td></td>
     </tr>
+    <tr>
+        <td></td>
+        <td><input type='button' value='Get Signed Request' onclick='NavToURLCustom();' type="submit"/></td>
+        <td></td>
+    </tr>
 </table>
