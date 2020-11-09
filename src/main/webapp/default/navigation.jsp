@@ -64,6 +64,16 @@
         return true;
     }
 
+    function CloseConsoleTabCustomEvent() {
+        
+        console.log("Fired NavToURL : ");
+        Sfdc.canvas.client.publish(sr.client,{
+            name : 'guidewire.closeConsoleTab'
+        });
+        
+        return true;
+    }
+
     function GetSignedRequest() {
         
         console.log("Get Signed Request entered ");
@@ -112,6 +122,11 @@ Example of Navigation Events from Canvas App to Salesforce for Oracle to test mo
     <tr>
         <td></td>
         <td><input type='button' value='Get Signed Request' onclick='GetSignedRequest();' type="submit"/></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td><input type='button' value='Close Console Tab' onclick='CloseConsoleTabCustomEvent();' type="submit"/></td>
         <td></td>
     </tr>
 </table>
